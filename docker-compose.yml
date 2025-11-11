@@ -1,0 +1,54 @@
+services:
+  registry:
+    build: ./services/registry
+    container_name: registry
+    ports: ["5000:5000"]
+
+  shell:
+    build: ./frontends/shell
+    container_name: shell
+    depends_on:
+      - registry
+    ports: ["3000:80"]
+
+  mfe-tasks:
+    build: ./frontends/mfe-tasks
+    container_name: mfe-tasks
+    depends_on:
+      - registry
+    environment:
+      REGISTRY_URL: http://registry:5000        # service-to-service
+      PUBLIC_URL:   http://localhost:3001       # what the browser uses
+      MFE_ID:       mfe-tasks
+      MFE_NAME:     Tasks
+      MFE_PAGE:     /tasks
+      MFE_ORDER:    10
+    ports: ["3001:80"]
+
+  mfe-metrics:
+    build: ./frontends/mfe-metrics
+    container_name: mfe-metrics
+    depends_on:
+      - registry
+    environment:
+      REGISTRY_URL: http://registry:5000
+      PUBLIC_URL:   http://localhost:3002
+      MFE_ID:       mfe-metrics
+      MFE_NAME:     Metrics
+      MFE_PAGE:     /metrics
+      MFE_ORDER:    20
+    ports: ["3002:80"]
+
+  mfe-notifications:
+    build: ./frontends/mfe-notifications
+    container_name: mfe-notifications
+    depends_on:
+      - registry
+    environment:
+      REGISTRY_URL: http://registry:5000
+      PUBLIC_URL:   http://localhost:3003
+      MFE_ID:       mfe-notifications
+      MFE_NAME:     Notifications
+      MFE_PAGE:     /notifications
+      MFE_ORDER:    30
+    ports: ["3003:80"]

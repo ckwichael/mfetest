@@ -1,0 +1,115 @@
+# -------------------------------
+# Root repository .gitignore
+# Covers: Node (Vite/React), .NET 8, Docker, IDEs, OS cruft
+# -------------------------------
+
+# ========== General OS / Editor ==========
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+*.tmp
+*.bak
+*.orig
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.vscode/
+.idea/
+*.iml
+*.sln.docstates
+
+# Keep workspace settings if you want:
+# !.vscode/settings.json
+
+# ========== Node / Frontend ==========
+node_modules/
+bower_components/
+dist/
+build/
+out/
+.tmp/
+.temp/
+.cache/
+.vite/
+vite.config.ts.timestamp-*
+
+# Vite cache (sometimes in node_modules)
+**/node_modules/.vite/
+
+# TypeScript
+*.tsbuildinfo
+
+# Test coverage / results
+coverage/
+.nyc_output/
+cypress/screenshots/
+cypress/videos/
+
+# Lint caches
+.eslintcache
+.stylelintcache
+
+# Env files (keep example checked in)
+.env
+.env.*
+!.env.example
+
+# Local certs/keys
+*.pem
+*.key
+*.crt
+*.pfx
+
+# ========== .NET / C# (Registry) ==========
+# Build results
+[Bb]in/
+[Oo]bj/
+# VS cache/metadata
+.vs/
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.rsuser
+
+# Logs
+*.etl
+*.ncb
+*.opendb
+
+# Local tooling
+launchSettings.json  # optional: ignore if you don't want local profiles committed
+
+# ========== Docker ==========
+# Compose overrides / env
+docker-compose.override.yml
+.docker/
+**/.dockerignore.local
+# Docker build cache/output
+**/Dockerfile.local
+**/.docker-build/
+**/.docker-cache/
+
+# ========== Misc project artifacts ==========
+# Zip / archives created during sharing
+*.zip
+*.tar
+*.tar.gz
+
+# Generated assets (ensure examples are committed instead)
+*.generated.*
+!*.example.*
+
+# ========== Per-folder specifics ==========
+# Frontends: keep lockfiles; remove this block if you don't want them
+# (Recommended to COMMIT lockfiles for reproducible builds)
+# !frontends/**/package-lock.json
+# !frontends/**/yarn.lock
+# !frontends/**/pnpm-lock.yaml
+
+# Registry: dotnet lock and assets (commit project files, ignore obj/bin)
+services/registry/Properties/launchSettings.json  # ignore local debug profiles
