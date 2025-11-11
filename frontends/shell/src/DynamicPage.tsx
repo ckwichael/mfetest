@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import type { MicrofrontendManifest } from "./types";
 import { loadMfeModule } from "./moduleLoader";
+import VanillaMount from "./VanillaMount";
 
 interface Props { manifest: MicrofrontendManifest; }
 
@@ -22,7 +23,11 @@ const DynamicPage: React.FC<Props> = ({ manifest }) => {
     }, [manifest]);
 
     const Page = mod?.Page;
-    return !Page ? <div>Loading {manifest.displayName}…</div> : <Page userName="Cameron" />;
+    const runtime = (mod?.runtime ?? "react") as "react" | "vanilla";
+    if (!mod) return <div>Loading {manifest.displayName}…</div>;
+    return runtime === "vanilla"
+        ? <VanillaMount factory={mod.Page} props={{ userName: "Cameron" }} />
+        : React.createElement(mod.Page, { userName: "Cameron" });
 };
 
 export default DynamicPage;

@@ -7,4 +7,5 @@ export interface MicrofrontendManifest {
   exposedWidgetModule: string;
   slots: string[];
   order: number;
+  runtime?: "react" | "vanilla"; // optional, used for rendering
 }

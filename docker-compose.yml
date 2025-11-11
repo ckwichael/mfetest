@@ -52,3 +52,15 @@ services:
       MFE_PAGE:     /notifications
       MFE_ORDER:    30
     ports: ["3003:80"]
+
+  mfe-vanilla:
+    build:
+      context: ./frontends/mfe-vanilla
+    container_name: mfe-vanilla
+    depends_on:
+      - registry
+    environment:
+      REGISTRY_URL: http://registry:5000
+      PUBLIC_URL:   http://localhost:3004
+    ports:
+      - "3004:80"

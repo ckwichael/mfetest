@@ -8,5 +8,6 @@ export const manifest: MicrofrontendRegistration = {
     exposedPageModule: "./Page",
     exposedWidgetModule: "./Widget",
     slots: ["dashboard"],
-    order: 30
+    order: 30,
+    runtime: "react"
 };

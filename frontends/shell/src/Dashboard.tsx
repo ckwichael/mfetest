@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import type { MicrofrontendManifest } from "./types";
 import { loadMfeModule } from "./moduleLoader";
+import VanillaMount from "./VanillaMount";
 
 const REGISTRY_URL = "http://localhost:5000";
 
@@ -35,11 +36,19 @@ const Dashboard: React.FC = () => {
     return (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
             {widgets.map((m) => {
-                const Widget = loaded[m.id]?.Widget;
+                const mod = loaded[m.id];               // result of dynamic import
+                const runtime = (mod?.runtime ?? "react") as "react" | "vanilla";
                 return (
                     <section key={m.id} style={{ border: "1px solid #ddd", borderRadius: 8, padding: 12, background: "#fff" }}>
                         <h3 style={{ marginTop: 0 }}>{m.displayName}</h3>
-                        {!Widget ? <div>Loading…</div> : <Widget userName="Cameron" />}
+                        {!mod ? (
+                            <div>Loading…</div>
+                        ) : runtime === "vanilla" ? (
+                            <VanillaMount factory={mod.Widget} props={{ userName: "Cameron" }} />
+                        ) : (
+                            // React component path (unchanged)
+                            React.createElement(mod.Widget, { userName: "Cameron" })
+                        )}
                     </section>
                 );
             })}

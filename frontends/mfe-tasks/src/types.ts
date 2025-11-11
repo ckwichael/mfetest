@@ -1,4 +1,4 @@
-export interface MicrofrontendRegistration {
+export interface MicrofrontendManifest {
     id: string;
     displayName: string;
     remoteEntryUrl: string;
@@ -7,4 +7,5 @@ export interface MicrofrontendRegistration {
     exposedWidgetModule: string;
     slots: string[];
     order: number;
+    runtime?: "react" | "vanilla"; // optional, used for rendering
 }
