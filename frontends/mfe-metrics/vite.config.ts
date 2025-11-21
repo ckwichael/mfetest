@@ -3,26 +3,21 @@ import react from "@vitejs/plugin-react-swc";
 
 export default defineConfig({
     plugins: [react()],
-    server: {
-        port: 3002
-    },
+    server: { port: 3002 },
     build: {
         outDir: "dist",
         lib: {
-            entry: "src/remoteEntry.ts",
-            name: "MfeMetrics",
+            entry: "src/exports.ts",
             formats: ["es"],
-            fileName: () => "remoteEntry.js"
+            fileName: () => "remoteModule.js"
         },
         rollupOptions: {
-            output: {
-                inlineDynamicImports: true
-            }
+            external: [], // bundle deps to avoid CJS 'process' refs
+            output: { inlineDynamicImports: true }
         },
         commonjsOptions: { transformMixedEsModules: true }
     },
     define: {
-        "process.env.NODE_ENV": JSON.stringify("production"),
-        "process.env": {} // prevents 'process is not defined' at runtime
+        "process.env.NODE_ENV": JSON.stringify("production")
     }
 });

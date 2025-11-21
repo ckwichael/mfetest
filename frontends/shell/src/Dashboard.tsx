@@ -1,57 +1,63 @@
-// frontends/shell/src/Dashboard.tsx
 import React, { useEffect, useState } from "react";
+import UmcHost from "./UmcHost";
 import type { MicrofrontendManifest } from "./types";
-import { loadMfeModule } from "./moduleLoader";
-import VanillaMount from "./VanillaMount";
 
+// If you prefer, move this into a config file or env var.
 const REGISTRY_URL = "http://localhost:5000";
 
 const Dashboard: React.FC = () => {
     const [widgets, setWidgets] = useState<MicrofrontendManifest[]>([]);
-    const [loaded, setLoaded] = useState<Record<string, any>>({});
+    const [loading, setLoading] = useState(true);
+    const [err, setErr] = useState<string | null>(null);
 
     useEffect(() => {
-        fetch(`${REGISTRY_URL}/api/mfe/widgets?slot=dashboard`)
-            .then((r) => r.json())
-            .then((data: MicrofrontendManifest[]) =>
-                setWidgets(data.slice().sort((a, b) => a.order - b.order))
-            )
-            .catch((e) => console.error("widgets fetch failed", e));
+        let cancelled = false;
+        (async () => {
+            try {
+                setLoading(true);
+                setErr(null);
+                const res = await fetch(`${REGISTRY_URL}/api/mfe/widgets?slot=dashboard`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data: MicrofrontendManifest[] = await res.json();
+                if (!cancelled) {
+                    setWidgets([...data].sort((a, b) => a.order - b.order));
+                }
+            } catch (e: any) {
+                if (!cancelled) setErr(e?.message ?? "Failed to load dashboard widgets");
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
-    useEffect(() => {
-        (async () => {
-            const entries: Record<string, any> = {};
-            for (const m of widgets) {
-                try {
-                    entries[m.id] = await loadMfeModule(m);
-                } catch (e) {
-                    console.error("failed to import module", m.id, e);
-                }
-            }
-            setLoaded(entries);
-        })();
-    }, [widgets]);
+    if (loading) return <div>Loading dashboard…</div>;
+    if (err) return <div style={{ color: "#b91c1c" }}>Error: {err}</div>;
 
     return (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
-            {widgets.map((m) => {
-                const mod = loaded[m.id];               // result of dynamic import
-                const runtime = (mod?.runtime ?? "react") as "react" | "vanilla";
-                return (
-                    <section key={m.id} style={{ border: "1px solid #ddd", borderRadius: 8, padding: 12, background: "#fff" }}>
-                        <h3 style={{ marginTop: 0 }}>{m.displayName}</h3>
-                        {!mod ? (
-                            <div>Loading…</div>
-                        ) : runtime === "vanilla" ? (
-                            <VanillaMount factory={mod.Widget} props={{ userName: "Cameron" }} />
-                        ) : (
-                            // React component path (unchanged)
-                            React.createElement(mod.Widget, { userName: "Cameron" })
-                        )}
-                    </section>
-                );
-            })}
+        <div
+            style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                gap: 16,
+            }}
+        >
+            {widgets.map((m) => (
+                <section
+                    key={m.id}
+                    style={{
+                        border: "1px solid #e5e7eb",
+                        borderRadius: 8,
+                        padding: 12,
+                        background: "#fff",
+                    }}
+                >
+                    <h3 style={{ marginTop: 0 }}>{m.displayName}</h3>
+                    <UmcHost url={m.remoteModuleUrl} kind="widget" />
+                </section>
+            ))}
         </div>
     );
 };

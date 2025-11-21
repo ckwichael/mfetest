@@ -5,7 +5,7 @@ export default defineConfig({
     build: {
         outDir: "dist",
         lib: {
-            entry: "src/remoteEntry.ts",
+            entry: "src/exports.ts",
             formats: ["es"],
             fileName: () => "remoteModule.js"
         }

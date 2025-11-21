@@ -9,10 +9,10 @@ export default defineConfig({
     build: {
         outDir: "dist",
         lib: {
-            entry: "src/remoteEntry.ts",
+            entry: "src/exports.ts",
             name: "MfeNotifications",
             formats: ["es"],
-            fileName: () => "remoteEntry.js"
+            fileName: () => "remoteModule.js"
         },
         rollupOptions: {
             output: {

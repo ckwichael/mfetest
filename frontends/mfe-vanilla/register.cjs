@@ -1,17 +1,15 @@
 const http = require("http");
 const REGISTRY_URL = process.env.REGISTRY_URL || "http://registry:5000";
 const PUBLIC_URL = process.env.PUBLIC_URL || "http://mfe-vanilla:80";
+
 const manifest = {
     id: "mfe-vanilla",
     displayName: "Vanilla",
-    remoteEntryUrl: `${PUBLIC_URL}/remoteModule.js`, // ES module URL
-    pageRoute: "/vanilla",
-    exposedPageModule: "./Page",
-    exposedWidgetModule: "./Widget",
-    slots: ["dashboard"],
+    remoteModuleUrl: `${PUBLIC_URL}/remoteModule.js`, // <— rename & ES module
     order: 40,
-    runtime: "vanilla"
+    capabilities: { widget: true, page: true, slots: ["dashboard"] }
 };
+
 function postJSON(url, data) {
     return new Promise((resolve, reject) => {
         const { hostname, port, pathname, search } = new URL(url);

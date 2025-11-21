@@ -11,12 +11,9 @@ const ORDER = Number(process.env.MFE_ORDER || 30);
 const manifest = {
     id: ID,
     displayName: NAME,
-    remoteEntryUrl: `${PUBLIC_URL}/remoteEntry.js`,
-    pageRoute: PAGE_ROUTE,
-    exposedPageModule: "./Page",
-    exposedWidgetModule: "./Widget",
-    slots: ["dashboard"],
-    order: ORDER
+    remoteModuleUrl: `${PUBLIC_URL}/remoteModule.js`, // <— rename & ES module
+    order: ORDER,
+    capabilities: { widget: true, page: true, slots: ["dashboard"] }
 };
 
 function postJSON(url, data) {

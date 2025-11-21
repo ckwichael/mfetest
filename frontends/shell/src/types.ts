@@ -1,11 +1,16 @@
+// Universal Microfrontend Contract (UMC) - minimal types used by the shell
+
+export interface Capabilities {
+  widget?: boolean;
+  page?: boolean;
+  slots?: string[];
+}
+
 export interface MicrofrontendManifest {
   id: string;
   displayName: string;
-  remoteEntryUrl: string;
-  pageRoute: string;
-  exposedPageModule: string;
-  exposedWidgetModule: string;
-  slots: string[];
+  remoteModuleUrl: string; // ES module URL exporting mount/unmount
   order: number;
-  runtime?: "react" | "vanilla"; // optional, used for rendering
+  capabilities?: Capabilities;
+  pageRoute?: string | null; // optional metadata
 }
